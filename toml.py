@@ -294,6 +294,7 @@ def load_inline_object(line, currentlevel, multikey=False, multibackslash=False)
     candidate_groups = line[1:-1].split(",")
     groups = []
     while len(candidate_groups) > 0:
+        print(candidate_groups)
         candidate_group = candidate_groups.pop(0)
         _, value = candidate_group.split('=', 1)
         value = value.strip()
@@ -520,23 +521,9 @@ def load_array(a):
             a = a[1:-1].split(',')
         else:
             # a is an inline object, we must find the matching parenthesis to difine groups
-            new_a = []
-            start_group_index = 1
-            end_group_index = 2
-            while end_group_index < len(a[1:-1]):
-                if a[end_group_index] == '}':
-                    # Increase end_group_index by 1 to get the closing bracket
-                    end_group_index += 1
-                    new_a.append(a[start_group_index:end_group_index])
-                    # The next start index is at least after the closing bracket, a closing bracket
-                    # can be followed by a comma since we are in an array.
-                    start_group_index = end_group_index + 1
-                    while a[start_group_index] != '{' and start_group_index < len(a[1:-1]):
-                        start_group_index += 1
-                    end_group_index = start_group_index + 1
-                else:
-                    end_group_index += 1
-            a = new_a
+            print('a', a)
+            a = re.findall('\{[^}]*\}', a[1:-1], re.M|re.U)
+            print('aa', a)
         b = 0
         if strarray:
             while b < len(a) - 1:
